@@ -87,16 +87,19 @@ function parseItems(xml, count) {
   });
 }
 
+const THUMBNAIL_WIDTH = 180;
+const THUMBNAIL_HEIGHT = 120;
+
 function buildMarkdown(articles) {
   const cards = articles.map((a) => {
     const date = formatDate(a.pubDate);
     const title = escapeHtml(a.title);
     const excerpt = escapeHtml(a.excerpt);
     const thumbCell = a.thumbnail
-      ? `<td width="160" valign="top"><a href="${a.link}"><img src="${a.thumbnail}" width="150" alt="" /></a></td>\n`
+      ? `<td width="${THUMBNAIL_WIDTH}" valign="top"><a href="${a.link}"><img src="${a.thumbnail}" width="${THUMBNAIL_WIDTH}" height="${THUMBNAIL_HEIGHT}" alt="" /></a></td>\n`
       : "";
     return (
-      `<table>\n<tr>\n${thumbCell}` +
+      `<table cellpadding="10" cellspacing="0">\n<tr>\n${thumbCell}` +
       `<td valign="top">\n` +
       `<a href="${a.link}"><b>${title}</b></a><br/>\n` +
       `<sub>${date}</sub><br/>\n` +

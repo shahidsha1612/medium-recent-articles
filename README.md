@@ -2,7 +2,9 @@
 
 This shows your latest Medium blog posts on your GitHub profile page, and keeps them updated automatically — forever, for free, with no coding required.
 
-Each post is shown as a small card: its thumbnail image, title, date, and a short preview — all pulled straight from the post itself.
+Each post is shown as a small card: a uniformly-sized thumbnail, title, date, and a short preview — all pulled straight from the post itself. It automatically matches whatever theme (light or dark) the viewer has GitHub set to, since it never hardcodes any colors.
+
+Note: GitHub strips all CSS/JavaScript from rendered READMEs for security, so hover effects or animations aren't possible here — the cards are intentionally static and dependency-free.
 
 ## Step-by-step guide (no experience needed)
 
