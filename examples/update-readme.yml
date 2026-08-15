@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Update Medium articles in README
-        uses: your-username/medium-recent-articles@main
+        uses: shahidsha1612/medium-recent-articles@v1
         with:
           username: your-medium-username
           count: "3"

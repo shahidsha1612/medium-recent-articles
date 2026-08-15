@@ -1,5 +1,7 @@
 # Medium Recent Articles
 
+[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Medium%20Recent%20Articles-green?logo=github)](https://github.com/marketplace/actions/medium-recent-articles)
+
 This shows your latest Medium blog posts on your GitHub profile page, and keeps them updated automatically. It's free and needs no coding.
 
 Each post is shown as a small card: a thumbnail, title, date, and a short preview, all pulled straight from the post itself. Thumbnails are all shown at a uniform 180x120 size with no stretching or distortion. GitHub blocks the CSS (`object-fit`) that would normally do this kind of cropping in the browser, so instead the crop is requested straight from Medium's own image CDN (it sends back an already-cropped image), which works without needing any CSS at all. It automatically matches whatever theme (light or dark) the viewer has GitHub set to, since it never hardcodes any colors.
@@ -61,7 +63,7 @@ This is a little robot (called a "workflow") that visits Medium every day and up
        runs-on: ubuntu-latest
        steps:
          - uses: actions/checkout@v4
-         - uses: shahidsha1612/medium-recent-articles@main
+         - uses: shahidsha1612/medium-recent-articles@v1
            with:
              username: YOUR_MEDIUM_USERNAME
              count: "3"
