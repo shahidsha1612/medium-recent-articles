@@ -88,7 +88,7 @@ function parseItems(xml, count) {
 }
 
 function buildMarkdown(articles) {
-  const rows = articles.map((a) => {
+  const cards = articles.map((a) => {
     const date = formatDate(a.pubDate);
     const title = escapeHtml(a.title);
     const excerpt = escapeHtml(a.excerpt);
@@ -96,15 +96,15 @@ function buildMarkdown(articles) {
       ? `<td width="160" valign="top"><a href="${a.link}"><img src="${a.thumbnail}" width="150" alt="" /></a></td>\n`
       : "";
     return (
-      `<tr>\n${thumbCell}` +
+      `<table>\n<tr>\n${thumbCell}` +
       `<td valign="top">\n` +
       `<a href="${a.link}"><b>${title}</b></a><br/>\n` +
       `<sub>${date}</sub><br/>\n` +
       `${excerpt}\n` +
-      `</td>\n</tr>`
+      `</td>\n</tr>\n</table>`
     );
   });
-  return `<table>\n${rows.join("\n")}\n</table>`;
+  return cards.join("\n\n");
 }
 
 function updateReadme(readmePath, markdown) {
