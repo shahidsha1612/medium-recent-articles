@@ -88,7 +88,6 @@ function parseItems(xml, count) {
 }
 
 const THUMBNAIL_WIDTH = 180;
-const THUMBNAIL_HEIGHT = 120;
 
 function buildMarkdown(articles) {
   const cards = articles.map((a) => {
@@ -96,7 +95,7 @@ function buildMarkdown(articles) {
     const title = escapeHtml(a.title);
     const excerpt = escapeHtml(a.excerpt);
     const thumbCell = a.thumbnail
-      ? `<td width="${THUMBNAIL_WIDTH}" valign="top"><a href="${a.link}"><img src="${a.thumbnail}" width="${THUMBNAIL_WIDTH}" height="${THUMBNAIL_HEIGHT}" alt="" /></a></td>\n`
+      ? `<td width="${THUMBNAIL_WIDTH}" valign="top"><a href="${a.link}"><img src="${a.thumbnail}" width="${THUMBNAIL_WIDTH}" alt="" /></a></td>\n`
       : "";
     return (
       `<table cellpadding="10" cellspacing="0">\n<tr>\n${thumbCell}` +
