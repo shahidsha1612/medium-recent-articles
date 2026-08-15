@@ -1,6 +1,6 @@
 name: "Medium Recent Articles"
 description: "Updates a README.md file with a Markdown list of your recent Medium articles, pulled from Medium's public RSS feed."
-author: "you"
+author: "shahidsha1612"
 inputs:
   username:
     description: "Medium username (with or without @), or a full custom RSS feed URL for a custom domain."
@@ -14,5 +14,5 @@ inputs:
     required: false
     default: "README.md"
 runs:
-  using: "node20"
+  using: "node24"
   main: "index.js"
