@@ -41,9 +41,26 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
+const THUMBNAIL_WIDTH = 180;
+const THUMBNAIL_HEIGHT = 120;
+const MEDIUM_IMAGE_HOSTS = ["cdn-images-1.medium.com", "miro.medium.com"];
+
 function extractThumbnail(contentHtml) {
   const img = contentHtml.match(/<img[^>]*\ssrc="([^"]+)"/i);
   return img ? img[1] : "";
+}
+
+function croppedThumbnailUrl(rawUrl, width, height) {
+  if (!rawUrl) return { url: "", cropped: false };
+  try {
+    const u = new URL(rawUrl);
+    if (!MEDIUM_IMAGE_HOSTS.includes(u.hostname)) return { url: rawUrl, cropped: false };
+    const filename = u.pathname.split("/").pop();
+    if (!filename) return { url: rawUrl, cropped: false };
+    return { url: `${u.protocol}//${u.hostname}/v2/resize:fill:${width}:${height}/${filename}`, cropped: true };
+  } catch {
+    return { url: rawUrl, cropped: false };
+  }
 }
 
 function extractExcerpt(contentHtml, maxLen) {
@@ -77,17 +94,17 @@ function parseItems(xml, count) {
   }
   return rawItems.slice(0, count).map((item) => {
     const contentHtml = extractTag(item, "content:encoded");
+    const thumb = croppedThumbnailUrl(extractThumbnail(contentHtml), THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
     return {
       title: extractTag(item, "title"),
       link: extractTag(item, "link").split("?")[0],
       pubDate: extractTag(item, "pubDate"),
-      thumbnail: extractThumbnail(contentHtml),
+      thumbnail: thumb.url,
+      thumbnailCropped: thumb.cropped,
       excerpt: extractExcerpt(contentHtml, 140),
     };
   });
 }
-
-const THUMBNAIL_WIDTH = 180;
 
 function buildMarkdown(articles, options = {}) {
   const linkTitles = options.linkTitles !== false;
@@ -95,8 +112,9 @@ function buildMarkdown(articles, options = {}) {
     const date = formatDate(a.pubDate);
     const title = escapeHtml(a.title);
     const excerpt = escapeHtml(a.excerpt);
+    const imgSize = a.thumbnailCropped ? ` width="${THUMBNAIL_WIDTH}" height="${THUMBNAIL_HEIGHT}"` : ` width="${THUMBNAIL_WIDTH}"`;
     const thumbCell = a.thumbnail
-      ? `<td width="${THUMBNAIL_WIDTH}" valign="top"><a href="${a.link}"><img src="${a.thumbnail}" width="${THUMBNAIL_WIDTH}" alt="" /></a></td>\n`
+      ? `<td width="${THUMBNAIL_WIDTH}" valign="top"><a href="${a.link}"><img src="${a.thumbnail}"${imgSize} alt="" /></a></td>\n`
       : "";
     const titleHtml = linkTitles ? `<a href="${a.link}"><b>${title}</b></a>` : `<b>${title}</b>`;
     return (

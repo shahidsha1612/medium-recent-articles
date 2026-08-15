@@ -2,7 +2,7 @@
 
 This shows your latest Medium blog posts on your GitHub profile page, and keeps them updated automatically. It's free and needs no coding.
 
-Each post is shown as a small card: a thumbnail, title, date, and a short preview, all pulled straight from the post itself. Thumbnails are shown at a fixed width with their original aspect ratio preserved (no stretching or distortion), so card heights vary slightly from post to post depending on each image's shape. That's expected, since GitHub strips the CSS (`object-fit`) that would otherwise let us crop them to a uniform box. It automatically matches whatever theme (light or dark) the viewer has GitHub set to, since it never hardcodes any colors.
+Each post is shown as a small card: a thumbnail, title, date, and a short preview, all pulled straight from the post itself. Thumbnails are all shown at a uniform 180x120 size with no stretching or distortion. GitHub blocks the CSS (`object-fit`) that would normally do this kind of cropping in the browser, so instead the crop is requested straight from Medium's own image CDN (it sends back an already-cropped image), which works without needing any CSS at all. It automatically matches whatever theme (light or dark) the viewer has GitHub set to, since it never hardcodes any colors.
 
 Note: GitHub strips all CSS/JavaScript from rendered READMEs for security, so hover effects or animations aren't possible here. The cards are intentionally static and dependency-free.
 
