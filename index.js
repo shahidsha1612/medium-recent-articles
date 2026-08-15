@@ -33,6 +33,26 @@ function formatDate(pubDate) {
   return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 }
 
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function extractThumbnail(contentHtml) {
+  const img = contentHtml.match(/<img[^>]*\ssrc="([^"]+)"/i);
+  return img ? img[1] : "";
+}
+
+function extractExcerpt(contentHtml, maxLen) {
+  const spaced = contentHtml.replace(/<\/(p|div|h[1-6]|li)>/gi, " ").replace(/<br\s*\/?>/gi, " ");
+  const text = decodeEntities(stripTags(spaced)).replace(/\s+/g, " ").trim();
+  if (text.length <= maxLen) return text;
+  return `${text.slice(0, maxLen).trim()}...`;
+}
+
 function feedUrlForUsername(usernameOrUrl) {
   if (/^https?:\/\//i.test(usernameOrUrl)) return usernameOrUrl;
   const handle = usernameOrUrl.replace(/^@/, "");
@@ -55,20 +75,36 @@ function parseItems(xml, count) {
   if (rawItems.length === 0) {
     throw new Error("No articles found in the RSS feed. Check the username and that the Medium profile is public.");
   }
-  return rawItems.slice(0, count).map((item) => ({
-    title: extractTag(item, "title"),
-    link: extractTag(item, "link").split("?")[0],
-    pubDate: extractTag(item, "pubDate"),
-  }));
+  return rawItems.slice(0, count).map((item) => {
+    const contentHtml = extractTag(item, "content:encoded");
+    return {
+      title: extractTag(item, "title"),
+      link: extractTag(item, "link").split("?")[0],
+      pubDate: extractTag(item, "pubDate"),
+      thumbnail: extractThumbnail(contentHtml),
+      excerpt: extractExcerpt(contentHtml, 140),
+    };
+  });
 }
 
 function buildMarkdown(articles) {
-  return articles
-    .map((a) => {
-      const date = formatDate(a.pubDate);
-      return date ? `- [${a.title}](${a.link}) - ${date}` : `- [${a.title}](${a.link})`;
-    })
-    .join("\n");
+  const rows = articles.map((a) => {
+    const date = formatDate(a.pubDate);
+    const title = escapeHtml(a.title);
+    const excerpt = escapeHtml(a.excerpt);
+    const thumbCell = a.thumbnail
+      ? `<td width="160" valign="top"><a href="${a.link}"><img src="${a.thumbnail}" width="150" alt="" /></a></td>\n`
+      : "";
+    return (
+      `<tr>\n${thumbCell}` +
+      `<td valign="top">\n` +
+      `<a href="${a.link}"><b>${title}</b></a><br/>\n` +
+      `<sub>${date}</sub><br/>\n` +
+      `${excerpt}\n` +
+      `</td>\n</tr>`
+    );
+  });
+  return `<table>\n${rows.join("\n")}\n</table>`;
 }
 
 function updateReadme(readmePath, markdown) {

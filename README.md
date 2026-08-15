@@ -2,6 +2,8 @@
 
 This shows your latest Medium blog posts on your GitHub profile page, and keeps them updated automatically — forever, for free, with no coding required.
 
+Each post is shown as a small card: its thumbnail image, title, date, and a short preview — all pulled straight from the post itself.
+
 ## Step-by-step guide (no experience needed)
 
 ### Step 1: Create your special GitHub profile repo
