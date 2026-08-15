@@ -1,10 +1,10 @@
 # Medium Recent Articles
 
-This shows your latest Medium blog posts on your GitHub profile page, and keeps them updated automatically — forever, for free, with no coding required.
+This shows your latest Medium blog posts on your GitHub profile page, and keeps them updated automatically. It's free and needs no coding.
 
-Each post is shown as a small card: a thumbnail, title, date, and a short preview — all pulled straight from the post itself. Thumbnails are shown at a fixed width with their original aspect ratio preserved (no stretching/distortion), so card heights vary slightly from post to post depending on each image's shape — that's expected, since GitHub strips the CSS (`object-fit`) that would otherwise let us crop them to a uniform box. It automatically matches whatever theme (light or dark) the viewer has GitHub set to, since it never hardcodes any colors.
+Each post is shown as a small card: a thumbnail, title, date, and a short preview, all pulled straight from the post itself. Thumbnails are shown at a fixed width with their original aspect ratio preserved (no stretching or distortion), so card heights vary slightly from post to post depending on each image's shape. That's expected, since GitHub strips the CSS (`object-fit`) that would otherwise let us crop them to a uniform box. It automatically matches whatever theme (light or dark) the viewer has GitHub set to, since it never hardcodes any colors.
 
-Note: GitHub strips all CSS/JavaScript from rendered READMEs for security, so hover effects or animations aren't possible here — the cards are intentionally static and dependency-free.
+Note: GitHub strips all CSS/JavaScript from rendered READMEs for security, so hover effects or animations aren't possible here. The cards are intentionally static and dependency-free.
 
 ## Step-by-step guide (no experience needed)
 
@@ -22,7 +22,7 @@ GitHub has a secret trick: if you make a repo with the **exact same name** as yo
 
 ### Step 2: Add two "magic comment" lines
 
-These two lines tell the tool exactly where to put your article list. They won't show up on your profile — GitHub hides comments.
+These two lines tell the tool exactly where to put your article list. They won't show up on your profile, since GitHub hides comments.
 
 1. On your new repo's page, click on `README.md`
 2. Click the pencil ✏️ icon (top right) to edit it
@@ -44,7 +44,7 @@ This is a little robot (called a "workflow") that visits Medium every day and up
    ```
    .github/workflows/update-readme.yml
    ```
-   (typing the slashes will automatically create the folders — that's normal)
+   (typing the slashes will automatically create the folders, that's normal)
 3. Paste this in the big text box:
 
    ```yaml
@@ -65,6 +65,7 @@ This is a little robot (called a "workflow") that visits Medium every day and up
            with:
              username: YOUR_MEDIUM_USERNAME
              count: "3"
+             link_titles: "true"
          - run: |
              git config user.name "github-actions[bot]"
              git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -73,8 +74,12 @@ This is a little robot (called a "workflow") that visits Medium every day and up
              git push
    ```
 
-4. **Important:** replace `YOUR_MEDIUM_USERNAME` with your real Medium username (the part after the `@` on your Medium profile URL, e.g. `medium.com/@janedoe` → `janedoe`)
+4. **Important:** replace `YOUR_MEDIUM_USERNAME` with your real Medium username (the part after the `@` on your Medium profile URL, e.g. `medium.com/@janedoe` becomes `janedoe`)
 5. Click **"Commit changes"**
+
+Two settings you can change any time:
+- `count` is how many recent articles show up. Change `"3"` to any number you like.
+- `link_titles` controls whether the article title is a clickable link. Set it to `"false"` if you'd rather have plain bold text with no link.
 
 ### Step 4: Test it right now (don't wait a day)
 
@@ -82,9 +87,9 @@ This is a little robot (called a "workflow") that visits Medium every day and up
 2. On the left, click **"Update README with recent Medium articles"**
 3. Click the **"Run workflow"** button, then click the green **"Run workflow"** that appears
 4. Wait about 30 seconds, then click on your repo's name to go back to the main page
-5. Refresh the page — your recent Medium articles should now be listed! 🎉
+5. Refresh the page. Your recent Medium articles should now be listed! 🎉
 
-That's it. From now on, it updates itself every day — you never have to touch it again.
+That's it. From now on, it updates itself every day. You never have to touch it again.
 
 ### Something not working?
 
@@ -100,9 +105,9 @@ That's it. From now on, it updates itself every day — you never have to touch 
 This is a self-contained alternative to [`github-readme-medium-recent-article`](https://github.com/bxcodec/github-readme-medium-recent-article), which relies on a hosted third-party service (a Vercel deployment that scrapes Medium) that can go down or break whenever Medium changes its page structure.
 
 Instead, this tool:
-- Reads Medium's own public RSS feed (`https://medium.com/feed/@username`) — a stable, official format Medium has supported for years, not scraped HTML.
+- Reads Medium's own public RSS feed (`https://medium.com/feed/@username`), a stable, official format Medium has supported for years, not scraped HTML.
 - Runs entirely in your own GitHub repo (as a GitHub Action above) or on your own machine (as a plain Node script).
-- Has **zero dependencies** — just one file (`index.js`) using Node's built-in `fetch`.
+- Has **zero dependencies**, just one file (`index.js`) using Node's built-in `fetch`.
 - Never depends on any external hosted service being up.
 
 ### Run it yourself, no GitHub Action needed
@@ -111,23 +116,23 @@ Instead, this tool:
 node index.js --username=your-medium-username --count=3 --readme=README.md
 ```
 
-- `--username` — your Medium username (with or without `@`), or a full RSS URL if you use a custom domain.
-- `--count` — how many recent articles to list (default `3`).
-- `--readme` — path to the file to update (default `README.md`). If the file doesn't exist, the Markdown is printed to stdout instead.
-- `--link_titles` — set to `false` to render titles as plain bold text instead of a clickable link (default `true`).
+- `--username`: your Medium username (with or without `@`), or a full RSS URL if you use a custom domain.
+- `--count`: how many recent articles to list (default `3`).
+- `--readme`: path to the file to update (default `README.md`). If the file doesn't exist, the Markdown is printed to stdout instead.
+- `--link_titles`: set to `false` to render titles as plain bold text instead of a clickable link (default `true`).
 
-Run this from a cron job, a pre-commit hook, or however you like — it's a plain script.
+Run this from a cron job, a pre-commit hook, or however you like. It's a plain script.
 
 ### Action inputs
 
 | Input         | Required | Default      | Description                                                    |
 |---------------|----------|--------------|------------------------------------------------------------------|
-| `username`    | yes      | —            | Medium username (with or without `@`), or full RSS URL           |
+| `username`    | yes      | none         | Medium username (with or without `@`), or full RSS URL           |
 | `count`       | no       | `3`          | Number of recent articles to include                             |
 | `readme`      | no       | `README.md`  | Path to the README file to update                                 |
 | `link_titles` | no       | `true`       | `false` renders titles as plain bold text instead of a link       |
 
-Note on customizing colors/fonts: GitHub strips `style` attributes and `<font>` tags from rendered READMEs (verified — they're silently removed), so there's no way to make card colors or fonts customizable on a GitHub profile page. That's a GitHub platform limitation, not something this tool can work around without depending on a live external rendering service again.
+Note on customizing colors/fonts: GitHub strips `style` attributes and `<font>` tags from rendered READMEs (verified: they're silently removed), so there's no way to make card colors or fonts customizable on a GitHub profile page. That's a GitHub platform limitation, not something this tool can work around without depending on a live external rendering service again.
 
 A full example workflow is also available at [`examples/update-readme.yml`](examples/update-readme.yml).
 
