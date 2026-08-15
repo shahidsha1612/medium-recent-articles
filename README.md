@@ -114,16 +114,20 @@ node index.js --username=your-medium-username --count=3 --readme=README.md
 - `--username` — your Medium username (with or without `@`), or a full RSS URL if you use a custom domain.
 - `--count` — how many recent articles to list (default `3`).
 - `--readme` — path to the file to update (default `README.md`). If the file doesn't exist, the Markdown is printed to stdout instead.
+- `--link_titles` — set to `false` to render titles as plain bold text instead of a clickable link (default `true`).
 
 Run this from a cron job, a pre-commit hook, or however you like — it's a plain script.
 
 ### Action inputs
 
-| Input      | Required | Default      | Description                                              |
-|------------|----------|--------------|------------------------------------------------------------|
-| `username` | yes      | —            | Medium username (with or without `@`), or full RSS URL     |
-| `count`    | no       | `3`          | Number of recent articles to include                       |
-| `readme`   | no       | `README.md`  | Path to the README file to update                           |
+| Input         | Required | Default      | Description                                                    |
+|---------------|----------|--------------|------------------------------------------------------------------|
+| `username`    | yes      | —            | Medium username (with or without `@`), or full RSS URL           |
+| `count`       | no       | `3`          | Number of recent articles to include                             |
+| `readme`      | no       | `README.md`  | Path to the README file to update                                 |
+| `link_titles` | no       | `true`       | `false` renders titles as plain bold text instead of a link       |
+
+Note on customizing colors/fonts: GitHub strips `style` attributes and `<font>` tags from rendered READMEs (verified — they're silently removed), so there's no way to make card colors or fonts customizable on a GitHub profile page. That's a GitHub platform limitation, not something this tool can work around without depending on a live external rendering service again.
 
 A full example workflow is also available at [`examples/update-readme.yml`](examples/update-readme.yml).
 

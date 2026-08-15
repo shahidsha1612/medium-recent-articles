@@ -20,6 +20,7 @@ jobs:
           username: your-medium-username
           count: "3"
           readme: README.md
+          link_titles: "true"
 
       - name: Commit changes
         run: |

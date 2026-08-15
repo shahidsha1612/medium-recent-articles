@@ -13,6 +13,10 @@ inputs:
     description: "Path to the README file to update."
     required: false
     default: "README.md"
+  link_titles:
+    description: "Whether article titles link to the post ('true') or render as plain bold text ('false')."
+    required: false
+    default: "true"
 runs:
   using: "node24"
   main: "index.js"

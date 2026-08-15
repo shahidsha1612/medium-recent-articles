@@ -89,7 +89,8 @@ function parseItems(xml, count) {
 
 const THUMBNAIL_WIDTH = 180;
 
-function buildMarkdown(articles) {
+function buildMarkdown(articles, options = {}) {
+  const linkTitles = options.linkTitles !== false;
   const cards = articles.map((a) => {
     const date = formatDate(a.pubDate);
     const title = escapeHtml(a.title);
@@ -97,10 +98,11 @@ function buildMarkdown(articles) {
     const thumbCell = a.thumbnail
       ? `<td width="${THUMBNAIL_WIDTH}" valign="top"><a href="${a.link}"><img src="${a.thumbnail}" width="${THUMBNAIL_WIDTH}" alt="" /></a></td>\n`
       : "";
+    const titleHtml = linkTitles ? `<a href="${a.link}"><b>${title}</b></a>` : `<b>${title}</b>`;
     return (
       `<table cellpadding="10" cellspacing="0">\n<tr>\n${thumbCell}` +
       `<td valign="top">\n` +
-      `<a href="${a.link}"><b>${title}</b></a><br/>\n` +
+      `${titleHtml}<br/>\n` +
       `<sub>${date}</sub><br/>\n` +
       `${excerpt}\n` +
       `</td>\n</tr>\n</table>`
@@ -137,6 +139,7 @@ async function main() {
   const username = getInput("username", "");
   const count = parseInt(getInput("count", "3"), 10) || 3;
   const readmePath = path.resolve(getInput("readme", "README.md"));
+  const linkTitles = getInput("link_titles", "true") !== "false";
 
   if (!username) {
     throw new Error("Missing required input: username (e.g. --username=your-medium-username)");
@@ -144,7 +147,7 @@ async function main() {
 
   const xml = await fetchFeed(username);
   const articles = parseItems(xml, count);
-  const markdown = buildMarkdown(articles);
+  const markdown = buildMarkdown(articles, { linkTitles });
 
   if (fs.existsSync(readmePath)) {
     const changed = updateReadme(readmePath, markdown);
