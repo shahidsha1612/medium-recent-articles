@@ -1,0 +1,16 @@
+{
+  "name": "medium-recent-articles",
+  "version": "1.0.0",
+  "description": "Update a README with your recent Medium articles, using Medium's public RSS feed. No API keys, no hosted third-party service, no dependencies.",
+  "main": "index.js",
+  "bin": {
+    "medium-recent-articles": "index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

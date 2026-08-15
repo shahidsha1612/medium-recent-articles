@@ -1,0 +1,30 @@
+name: Update README with recent Medium articles
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # every day at 06:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update Medium articles in README
+        uses: ./ # replace with your-username/medium-recent-articles@main once pushed to its own repo
+        with:
+          username: your-medium-username
+          count: "3"
+          readme: README.md
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --cached --quiet || git commit -m "chore: update recent Medium articles"
+          git push
