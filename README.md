@@ -36,7 +36,7 @@ Run this from a cron job, a pre-commit hook, or however you like — it's a plai
 ## Option B: run it automatically as a GitHub Action
 
 1. Push this folder to a GitHub repo (e.g. `your-username/medium-recent-articles`).
-2. In your **profile README repo** (`your-username/your-username`), add a workflow like `.github/workflows/update-readme.yml` (an example is included here):
+2. In your **profile README repo** (`your-username/your-username`), add a workflow at `.github/workflows/update-readme.yml` (an example is included at [`examples/update-readme.yml`](examples/update-readme.yml)):
 
    ```yaml
    on:
