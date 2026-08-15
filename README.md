@@ -1,42 +1,47 @@
 # Medium Recent Articles
 
-A small, self-contained tool that adds a list of your recent Medium articles to your GitHub profile README.
+This shows your latest Medium blog posts on your GitHub profile page, and keeps them updated automatically — forever, for free, with no coding required.
 
-This is a simpler replacement for [`github-readme-medium-recent-article`](https://github.com/bxcodec/github-readme-medium-recent-article), which relies on a hosted third-party service (a Vercel deployment that scrapes Medium) that can go down or break whenever Medium changes its page structure.
+## Step-by-step guide (no experience needed)
 
-Instead, this tool:
-- Reads Medium's own public RSS feed (`https://medium.com/feed/@username`) — a stable, official format Medium has supported for years, not scraped HTML.
-- Runs entirely in your own GitHub repo (as a GitHub Action) or on your own machine (as a plain Node script).
-- Has **zero dependencies** — just one file (`index.js`) using Node's built-in `fetch`.
-- Never depends on any external hosted service being up.
+### Step 1: Create your special GitHub profile repo
 
-## How it works
+GitHub has a secret trick: if you make a repo with the **exact same name** as your username, GitHub shows its README on your profile page.
 
-1. Add two marker comments to your `README.md` where you want the article list to appear:
+1. Go to https://github.com/new
+2. In "Repository name", type your GitHub username **exactly** (e.g. if your username is `janedoe`, name the repo `janedoe`)
+3. Choose **Public**
+4. Tick the box **"Add a README file"**
+5. Click the green **"Create repository"** button
 
-   ```md
+*(Already have this repo? Just skip to Step 2.)*
+
+### Step 2: Add two "magic comment" lines
+
+These two lines tell the tool exactly where to put your article list. They won't show up on your profile — GitHub hides comments.
+
+1. On your new repo's page, click on `README.md`
+2. Click the pencil ✏️ icon (top right) to edit it
+3. Paste these two lines anywhere in the file:
+
+   ```
    <!-- MEDIUM-RECENT-ARTICLES:START -->
    <!-- MEDIUM-RECENT-ARTICLES:END -->
    ```
 
-2. Run the script, pointing it at your Medium username. It fetches your RSS feed and replaces everything between the markers with a Markdown list of your latest articles — everything else in the file is left untouched.
+4. Scroll down and click **"Commit changes"**
 
-## Option A: run it yourself (no GitHub Action needed)
+### Step 3: Add the auto-update robot
 
-```bash
-node index.js --username=your-medium-username --count=3 --readme=README.md
-```
+This is a little robot (called a "workflow") that visits Medium every day and updates your README for you.
 
-- `--username` — your Medium username (with or without `@`), or a full RSS URL if you use a custom domain.
-- `--count` — how many recent articles to list (default `3`).
-- `--readme` — path to the file to update (default `README.md`). If the file doesn't exist, the Markdown is printed to stdout instead.
-
-Run this from a cron job, a pre-commit hook, or however you like — it's a plain script.
-
-## Option B: run it automatically as a GitHub Action
-
-1. Push this folder to a GitHub repo (e.g. `your-username/medium-recent-articles`).
-2. In your **profile README repo** (`your-username/your-username`), add a workflow at `.github/workflows/update-readme.yml` (an example is included at [`examples/update-readme.yml`](examples/update-readme.yml)):
+1. In your repo, click **"Add file"** → **"Create new file"**
+2. In the name box, type exactly:
+   ```
+   .github/workflows/update-readme.yml
+   ```
+   (typing the slashes will automatically create the folders — that's normal)
+3. Paste this in the big text box:
 
    ```yaml
    on:
@@ -52,9 +57,9 @@ Run this from a cron job, a pre-commit hook, or however you like — it's a plai
        runs-on: ubuntu-latest
        steps:
          - uses: actions/checkout@v4
-         - uses: your-username/medium-recent-articles@main
+         - uses: shahidsha1612/medium-recent-articles@main
            with:
-             username: your-medium-username
+             username: YOUR_MEDIUM_USERNAME
              count: "3"
          - run: |
              git config user.name "github-actions[bot]"
@@ -64,13 +69,63 @@ Run this from a cron job, a pre-commit hook, or however you like — it's a plai
              git push
    ```
 
-3. Make sure your `README.md` has the `START`/`END` markers shown above.
+4. **Important:** replace `YOUR_MEDIUM_USERNAME` with your real Medium username (the part after the `@` on your Medium profile URL, e.g. `medium.com/@janedoe` → `janedoe`)
+5. Click **"Commit changes"**
 
-That's it — no API tokens, no secrets, no third-party site to embed images from.
+### Step 4: Test it right now (don't wait a day)
 
-## Tested
+1. Click the **"Actions"** tab at the top of your repo
+2. On the left, click **"Update README with recent Medium articles"**
+3. Click the **"Run workflow"** button, then click the green **"Run workflow"** that appears
+4. Wait about 30 seconds, then click on your repo's name to go back to the main page
+5. Refresh the page — your recent Medium articles should now be listed! 🎉
 
-Verified end-to-end against a live Medium account (`your-medium-username`):
+That's it. From now on, it updates itself every day — you never have to touch it again.
+
+### Something not working?
+
+- **No list appeared** → Open your `README.md` and check the two comment lines from Step 2 are still there, spelled exactly right.
+- **Red ❌ on the Actions tab** → Click on it to read the message. This almost always means the Medium username in Step 3 is misspelled, or that Medium account doesn't exist or has no public posts.
+- **Want more or fewer articles** → Change `count: "3"` to any number you like.
+- **Still stuck** → Open an issue on this repo and paste the error message you see.
+
+---
+
+## For developers
+
+This is a self-contained alternative to [`github-readme-medium-recent-article`](https://github.com/bxcodec/github-readme-medium-recent-article), which relies on a hosted third-party service (a Vercel deployment that scrapes Medium) that can go down or break whenever Medium changes its page structure.
+
+Instead, this tool:
+- Reads Medium's own public RSS feed (`https://medium.com/feed/@username`) — a stable, official format Medium has supported for years, not scraped HTML.
+- Runs entirely in your own GitHub repo (as a GitHub Action above) or on your own machine (as a plain Node script).
+- Has **zero dependencies** — just one file (`index.js`) using Node's built-in `fetch`.
+- Never depends on any external hosted service being up.
+
+### Run it yourself, no GitHub Action needed
+
+```bash
+node index.js --username=your-medium-username --count=3 --readme=README.md
+```
+
+- `--username` — your Medium username (with or without `@`), or a full RSS URL if you use a custom domain.
+- `--count` — how many recent articles to list (default `3`).
+- `--readme` — path to the file to update (default `README.md`). If the file doesn't exist, the Markdown is printed to stdout instead.
+
+Run this from a cron job, a pre-commit hook, or however you like — it's a plain script.
+
+### Action inputs
+
+| Input      | Required | Default      | Description                                              |
+|------------|----------|--------------|------------------------------------------------------------|
+| `username` | yes      | —            | Medium username (with or without `@`), or full RSS URL     |
+| `count`    | no       | `3`          | Number of recent articles to include                       |
+| `readme`   | no       | `README.md`  | Path to the README file to update                           |
+
+A full example workflow is also available at [`examples/update-readme.yml`](examples/update-readme.yml).
+
+### Tested
+
+Verified end-to-end against a live Medium account:
 - Fetches and correctly parses the real RSS feed into title/link/date.
 - Correctly replaces content between markers and leaves the rest of the file untouched.
 - Re-running when nothing changed is a safe no-op (won't create empty commits).
